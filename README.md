@@ -12,7 +12,7 @@
 
 ```bash
 # Клонируйте репо
-git clone https://github.com/YOUR_USERNAME/azovoai.git
+git clone https://github.com/Sobka228/azovoai.git
 cd azovoai
 
 # Установите зависимости
