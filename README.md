@@ -6,10 +6,6 @@
 [![Python](https://img.shields.io/badge/Python-3.10+-3776ab?style=plastic&logo=python)](https://python.org)
 [![Render](https://img.shields.io/badge/Render-Deployed-46e3b7?style=plastic&logo=render)](https://render.com)
 [![Website](https://img.shields.io/badge/Website-azovo.xo.je-FF6B6B?style=plastic&logo=googlechrome&logoColor=white)](https://azovo.xo.je)
-[![GitHub stars](https://img.shields.io/github/stars/твой-ник/azovo-ai-bot?style=plastic&logo=github&logoColor=white&color=yellow)](https://github.com/Sobka228/AzovoAi/stargazers)
-[![GitHub forks](https://img.shields.io/github/forks/твой-ник/azovo-ai-bot?style=plastic&logo=github&logoColor=white&color=blue)](https://github.com/Sobka228/AzovoAi/network)
-[![GitHub watchers](https://img.shields.io/github/watchers/твой-ник/azovo-ai-bot?style=plastic&logo=github&logoColor=white&color=green)](https://github.com/Sobka228/AzovoAi/watchers)
-[![GitHub issues](https://img.shields.io/github/issues/твой-ник/azovo-ai-bot?style=plastic&logo=github&logoColor=white&color=red)](https://github.com/Sobka228/AzovoAi/issues)
 
 
 ## Быстрый старт
@@ -324,3 +320,8 @@ python main.py
 Telegram: [@azovoAIbot](https://t.me/azovoAIbot)
 
 ---
+
+[![GitHub stars](https://img.shields.io/github/stars/твой-ник/azovo-ai-bot?style=plastic&logo=github&logoColor=white&color=yellow)](https://github.com/Sobka228/AzovoAi/stargazers)
+[![GitHub forks](https://img.shields.io/github/forks/твой-ник/azovo-ai-bot?style=plastic&logo=github&logoColor=white&color=blue)](https://github.com/Sobka228/AzovoAi/network)
+[![GitHub watchers](https://img.shields.io/github/watchers/твой-ник/azovo-ai-bot?style=plastic&logo=github&logoColor=white&color=green)](https://github.com/Sobka228/AzovoAi/watchers)
+[![GitHub issues](https://img.shields.io/github/issues/твой-ник/azovo-ai-bot?style=plastic&logo=github&logoColor=white&color=red)](https://github.com/Sobka228/AzovoAi/issues)
