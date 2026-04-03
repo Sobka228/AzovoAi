@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: azovoai
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: python main.py
+    envVars:
+      - key: BOT_TOKEN
+        sync: false          # задаётся вручную в Dashboard
+      - key: ADMIN_USER_ID
+        sync: false
+      - key: BOT_USERNAME
+        value: azovoAIbot
+      - key: POLLINATIONS_MODEL
+        value: openai         # openai | mistral | llama | deepseek ...
+    healthCheckPath: /health
+    plan: free                # или starter
