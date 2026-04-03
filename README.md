@@ -26,7 +26,7 @@ python main.py
 ## Возможности
 
 - Telegram API интеграция (aiogram 3.4.1)
-- Pollinations.ai API (free, no auth)
+- Pollinations.ai API (free, no auth) и локальная ИИ
 - Queue система для обработки сообщений
 - Rate limiting
 - Emoji реакции на сообщения
