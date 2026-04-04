@@ -36,14 +36,12 @@ if not BOT_TOKEN:
 # ---- Pollinations.ai ----
 POLLINATIONS_URL = "https://text.pollinations.ai/"
 POLLINATIONS_MODEL = os.getenv("POLLINATIONS_MODEL", "openai")
-# Доступные модели: openai, mistral, llama, deepseek, command-r-plus, ...
-# openai = GPT-4o-mini (бесплатно, без ключа)
 
 DATASET_FILE = "dataset.txt"
 ADMIN_USER_ID = int(os.getenv("ADMIN_USER_ID", "7451061064"))
 RATE_LIMIT_SECONDS = 2
 BOT_USERNAME = os.getenv("BOT_USERNAME", "azovoAIbot")
-PORT = int(os.getenv("PORT", "10000"))  # Render назначает порт через $PORT
+PORT = int(os.getenv("PORT", "10000"))
 
 # Файлы данных
 STATS_FILE = "bot_stats.json"
@@ -100,7 +98,6 @@ BOT_COMMANDS = [
 # ======== ЧЁРНЫЙ СПИСОК ========
 DEFAULT_BLACKLIST = ["пах", "пax"]
 
-
 def load_blacklist():
     if os.path.exists(BLACKLIST_FILE):
         try:
@@ -111,11 +108,9 @@ def load_blacklist():
     save_blacklist(DEFAULT_BLACKLIST)
     return DEFAULT_BLACKLIST.copy()
 
-
 def save_blacklist(words):
     with open(BLACKLIST_FILE, 'w', encoding='utf-8') as f:
         json.dump({"words": words}, f, ensure_ascii=False, indent=2)
-
 
 def is_blacklisted(text):
     if not text:
@@ -125,7 +120,6 @@ def is_blacklisted(text):
         if word in text_lower:
             return True
     return False
-
 
 # ======== СОГЛАСИЕ ========
 def load_consent():
@@ -137,21 +131,17 @@ def load_consent():
             return {}
     return {}
 
-
 def save_consent(data):
     with open(CONSENT_FILE, 'w', encoding='utf-8') as f:
         json.dump(data, f, ensure_ascii=False, indent=2)
 
-
 def has_user_consent(user_id):
     return str(user_id) in load_consent()
-
 
 def set_user_consent(user_id):
     data = load_consent()
     data[str(user_id)] = {"consent_time": int(time.time()), "consent_version": "1.0"}
     save_consent(data)
-
 
 # ======== СТАТИСТИКА ========
 def get_default_stats():
@@ -160,7 +150,6 @@ def get_default_stats():
         "total_messages": 0, "total_commands": 0, "total_thoughts": 0,
         "users": {}, "first_start": t, "last_restart": t
     }
-
 
 def load_stats():
     if os.path.exists(STATS_FILE):
@@ -173,7 +162,6 @@ def load_stats():
             pass
     return get_default_stats()
 
-
 def save_stats(s):
     try:
         with open(STATS_FILE, 'w', encoding='utf-8') as f:
@@ -181,9 +169,7 @@ def save_stats(s):
     except Exception as e:
         logger.error(f"Ошибка сохранения статистики: {e}")
 
-
 stats = load_stats()
-
 
 def update_stats(user_id, message_type="message"):
     global stats
@@ -207,15 +193,12 @@ def update_stats(user_id, message_type="message"):
         stats["users"][uid]["thoughts_count"] += 1
     save_stats(stats)
 
-
 # ======== ОЧЕРЕДЬ ========
 request_queue: asyncio.Queue = asyncio.Queue()
 user_last_time: dict[int, float] = defaultdict(float)
 
-
 def is_after_start(message: Message) -> bool:
     return int(message.date.timestamp()) >= BOT_START_TIME
-
 
 # ======== РЕАКЦИИ ========
 async def check_and_set_reaction(message: Message) -> bool:
@@ -237,7 +220,6 @@ async def check_and_set_reaction(message: Message) -> bool:
     except Exception as e:
         logger.warning(f"Не удалось поставить реакцию: {e}")
         return False
-
 
 async def notify_queue_position(message: Message, position: int):
     await message.answer(f"Ты в очереди, братан. Позиция: {position}. Жди, не дёргайся.")
@@ -265,7 +247,6 @@ def should_respond(message: Message) -> bool:
         return True
     return False
 
-
 # ======== ДАТАСЕТ ========
 def read_dataset():
     if not os.path.exists(DATASET_FILE):
@@ -273,11 +254,9 @@ def read_dataset():
     with open(DATASET_FILE, "r", encoding="utf-8") as f:
         return [l.strip() for l in f if l.strip()]
 
-
 def append_to_dataset(text: str):
-        with open(DATASET_FILE, "a", encoding="utf-8") as f:
-            f.write(text.strip() + "\n")
-
+    with open(DATASET_FILE, "a", encoding="utf-8") as f:
+        f.write(text.strip() + "\n")
 
 def get_dataset_size():
     if not os.path.exists(DATASET_FILE):
@@ -285,13 +264,11 @@ def get_dataset_size():
     with open(DATASET_FILE, "r", encoding="utf-8") as f:
         return sum(1 for _ in f)
 
-
 def get_dataset_content():
     if not os.path.exists(DATASET_FILE):
         return "Датасет пуст"
     with open(DATASET_FILE, "r", encoding="utf-8") as f:
         return f.read()
-
 
 def convert_to_train_format():
     lines = read_dataset()
@@ -308,7 +285,7 @@ def convert_to_train_format():
             i += 1
     return pairs
 
-#   промпт
+# промпт
 SYSTEM_PROMPT = (
     "ты хам ебаный отвечай коротко и с маленькой буквы без знаков препинания "
     "матерись как сапожник если чел норм отвечай хамовато если чел хамит в ответ "
@@ -317,7 +294,6 @@ SYSTEM_PROMPT = (
     "грубит ответь еще грубее никогда не извиняйся не будь вежливым вообще никаких "
     "знаков препинания только буквы и маты и с маленькой буквы"
 )
-
 
 def ask_ai(user_text: str) -> str:
     """Отправляет запрос к Pollinations.ai и возвращает ответ."""
@@ -356,7 +332,6 @@ def ask_ai(user_text: str) -> str:
                         .get("content", "нихуя не понял")
                         .strip()
                     )
-                # Или просто поле text / response
                 for key in ("text", "response", "content", "output"):
                     if key in data:
                         return str(data[key]).strip()
@@ -373,8 +348,7 @@ def ask_ai(user_text: str) -> str:
         logger.exception("ask_ai error")
         return f"всё упало: {e}"
 
-#   ОБРАБОТЧИК ОЧЕРЕДИ
-
+# ОБРАБОТЧИК ОЧЕРЕДИ
 async def queue_processor():
     while True:
         msg, loop = await request_queue.get()
@@ -391,9 +365,11 @@ async def queue_processor():
                 if msg.text and msg.text.startswith(
                     tuple(f'/{cmd}' for cmd in BOT_COMMANDS)
                 ):
+                    request_queue.task_done()
                     continue
 
                 if await check_and_set_reaction(msg):
+                    request_queue.task_done()
                     continue
 
                 reply = await loop.run_in_executor(None, ask_ai, msg.text)
@@ -411,9 +387,7 @@ async def queue_processor():
         finally:
             request_queue.task_done()
 
-
-#   ЕЖЕДНЕВНЫЕ МЫСЛИ
-
+# ЕЖЕДНЕВНЫЕ МЫСЛИ
 class DailyThoughts:
     def __init__(self, bot_instance):
         self.bot = bot_instance
@@ -515,12 +489,9 @@ class DailyThoughts:
     def get_chats_list(self):
         return self.target_chats
 
-
 daily_thoughts = DailyThoughts(bot)
 
-
-#   КОМАНДЫ
-
+# КОМАНДЫ
 @dp.message(Command("save"))
 async def cmd_save(message: Message):
     if not message.from_user or message.from_user.id != ADMIN_USER_ID:
@@ -532,7 +503,6 @@ async def cmd_save(message: Message):
         parse_mode="Markdown",
     )
     update_stats(message.from_user.id, "command")
-
 
 @dp.message(Command("ping"))
 async def cmd_ping(message: Message):
@@ -551,14 +521,12 @@ async def cmd_ping(message: Message):
     if message.from_user:
         update_stats(message.from_user.id, "command")
 
-
 @dp.message(Command("reset"))
 async def reset_chat(message: Message):
     if not message.from_user or message.from_user.id != ADMIN_USER_ID:
         return await message.reply("Ты не админ, иди батарейки лижи! 🔋")
     await message.reply("🧹 Память очищена, бля! Теперь как новенький!")
     update_stats(message.from_user.id, "command")
-
 
 @dp.message(Command("bot"))
 async def bot_stats(message: Message):
@@ -585,7 +553,6 @@ async def bot_stats(message: Message):
     )
     update_stats(message.from_user.id, "command")
 
-
 @dp.message(Command("dataset_stats"))
 async def cmd_dataset_stats(message: Message):
     if not message.from_user or message.from_user.id != ADMIN_USER_ID:
@@ -598,7 +565,6 @@ async def cmd_dataset_stats(message: Message):
     )
     update_stats(message.from_user.id, "command")
 
-
 @dp.message(Command("clear_dataset"))
 async def cmd_clear_dataset(message: Message):
     if not message.from_user or message.from_user.id != ADMIN_USER_ID:
@@ -607,7 +573,6 @@ async def cmd_clear_dataset(message: Message):
         f.write("")
     await message.reply("🗑️ **ДАТАСЕТ ОЧИЩЕН**", parse_mode="Markdown")
     update_stats(message.from_user.id, "command")
-
 
 @dp.message(Command("export_dataset"))
 async def cmd_export_dataset(message: Message):
@@ -632,9 +597,7 @@ async def cmd_export_dataset(message: Message):
         )
     update_stats(message.from_user.id, "command")
 
-
-# ---- мысли ----
-
+# мысли
 @dp.message(Command("thoughts_start"))
 async def cmd_thoughts_start(message: Message):
     if not message.from_user or message.from_user.id != ADMIN_USER_ID:
@@ -645,7 +608,6 @@ async def cmd_thoughts_start(message: Message):
     )
     update_stats(message.from_user.id, "command")
 
-
 @dp.message(Command("thoughts_stop"))
 async def cmd_thoughts_stop(message: Message):
     if not message.from_user or message.from_user.id != ADMIN_USER_ID:
@@ -653,7 +615,6 @@ async def cmd_thoughts_stop(message: Message):
     daily_thoughts.stop()
     await message.reply("🛑 Мысли остановлены")
     update_stats(message.from_user.id, "command")
-
 
 @dp.message(Command("thoughts_add"))
 async def cmd_thoughts_add(message: Message):
@@ -687,7 +648,6 @@ async def cmd_thoughts_add(message: Message):
             await message.reply(f"{'✅' if ok else '⚠️'} {msg_text}")
     update_stats(message.from_user.id, "command")
 
-
 @dp.message(Command("thoughts_remove"))
 async def cmd_thoughts_remove(message: Message):
     if not message.from_user or message.from_user.id != ADMIN_USER_ID:
@@ -696,7 +656,6 @@ async def cmd_thoughts_remove(message: Message):
         ok, msg_text = daily_thoughts.remove_chat(message.chat.id)
         await message.reply(f"{'✅' if ok else '⚠️'} {msg_text}")
     update_stats(message.from_user.id, "command")
-
 
 @dp.message(Command("thoughts_time"))
 async def cmd_thoughts_time(message: Message):
@@ -714,7 +673,6 @@ async def cmd_thoughts_time(message: Message):
         await message.reply("❌ Неверный формат")
     update_stats(message.from_user.id, "command")
 
-
 @dp.message(Command("thoughts_now"))
 async def cmd_thoughts_now(message: Message):
     if not message.from_user or message.from_user.id != ADMIN_USER_ID:
@@ -723,7 +681,6 @@ async def cmd_thoughts_now(message: Message):
     thoughts = await daily_thoughts.get_random_thoughts(5, 10)
     await message.reply("\n".join(thoughts))
     update_stats(message.from_user.id, "command")
-
 
 @dp.message(Command("thoughts_list"))
 async def cmd_thoughts_list(message: Message):
@@ -739,9 +696,7 @@ async def cmd_thoughts_list(message: Message):
         await message.reply("📭 Список пуст")
     update_stats(message.from_user.id, "command")
 
-
 # ======== ПОЛИТИКА ========
-
 async def show_policy(message: Message):
     builder = InlineKeyboardBuilder()
     builder.button(text="✅ Я согласен", callback_data="accept_policy")
@@ -755,7 +710,6 @@ async def show_policy(message: Message):
         parse_mode="Markdown",
     )
 
-
 @dp.callback_query(F.data == "accept_policy")
 async def accept_policy(callback: CallbackQuery):
     if callback.from_user:
@@ -767,9 +721,7 @@ async def accept_policy(callback: CallbackQuery):
         )
     await callback.answer()
 
-
 # ======== СТАРТ ========
-
 @dp.message(CommandStart())
 async def start(message: Message):
     if not message.from_user or not message.chat:
@@ -789,7 +741,6 @@ async def start(message: Message):
     )
     update_stats(message.from_user.id, "command")
 
-
 @dp.message(Command("queue"))
 async def queue_status(message: Message):
     if not message.from_user:
@@ -799,7 +750,7 @@ async def queue_status(message: Message):
     pos = None
     try:
         for i in range(request_queue.qsize()):
-            queued_msg, _ = request_queue._queue[i]  # type: ignore
+            queued_msg, _ = request_queue._queue[i]
             if queued_msg.from_user and queued_msg.from_user.id == message.from_user.id:
                 pos = i + 1
                 break
@@ -808,9 +759,7 @@ async def queue_status(message: Message):
     await message.answer(f"Позиция: {pos}" if pos else "Тебя нет в очереди")
     update_stats(message.from_user.id, "command")
 
-
 # ======== ОСНОВНОЙ ОБРАБОТЧИК ========
-
 @dp.message()
 async def handle_message(message: Message):
     if not message.from_user or not message.chat:
@@ -836,12 +785,8 @@ async def handle_message(message: Message):
     if qsize > 0:
         await notify_queue_position(message, qsize + 1)
 
-
-
-#   health-check
-
+# health-check
 async def handle_health(request):
-    """Render шлёт GET / для проверки жизни сервиса."""
     uptime = int(time.time() - stats["last_restart"])
     return web.json_response({
         "status": "ok",
@@ -851,7 +796,6 @@ async def handle_health(request):
         "users": len(stats["users"]),
     })
 
-
 async def start_web_server():
     app = web.Application()
     app.router.add_get("/", handle_health)
@@ -860,13 +804,8 @@ async def start_web_server():
     await runner.setup()
     site = web.TCPSite(runner, "0.0.0.0", PORT)
     await site.start()
-    logger.info(f"🌐 Health-check сервер запущен на 0.0.0.0:{PORT}")
-
-
-# ================================================================
+    logger.info(f"Health-check сервер запущен на 0.0.0.0:{PORT}")
 #   ЗАПУСК
-# ================================================================
-
 async def on_startup():
     asyncio.create_task(queue_processor())
     global stats
@@ -876,17 +815,13 @@ async def on_startup():
     logger.info(f"🤖 Модель: {POLLINATIONS_MODEL} (Pollinations.ai)")
     logger.info(f"📁 Датасет: {DATASET_FILE}")
 
-
 async def main():
-    # 1) Поднимаем web-сервер для Render health-check
     await start_web_server()
-    # 2) Запускаем бота
     dp.startup.register(on_startup)
     try:
         await dp.start_polling(bot)
     finally:
         await bot.session.close()
-
 
 if __name__ == "__main__":
     try:
